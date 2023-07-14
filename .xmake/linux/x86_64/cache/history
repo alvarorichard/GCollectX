@@ -1,6 +1,0 @@
-{
-    cmdlines = {
-        "xmake ",
-        "xmake lua /usr/share/xmake/actions/build/cleaner.lua"
-    }
-}
