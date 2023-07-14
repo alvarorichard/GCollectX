@@ -33,6 +33,8 @@ typedef struct {
     int maxObjects;
 } VM;
 
+void gc(VM* vm);  // Forward declaration of gc function
+
 VM* newVM() {
     VM* vm = malloc(sizeof(VM));
     vm->stackSize = 0;
@@ -122,4 +124,18 @@ void gc(VM* vm) {
     vm->maxObjects = vm->numObjects == 0 ? INITIAL_GC_THRESHOLD : vm->numObjects * 2;
 
     printf("Collected %d objects, %d remaining.\n", numObjects - vm->numObjects, vm->numObjects);
+}
+
+int main() {
+    VM* vm = newVM();  // Create a new VM
+
+    pushInt(vm, 1);  // Push an integer to the stack
+    pushInt(vm, 2);  // Push another integer to the stack
+    pushPair(vm);  // Pop two integers from the stack, wrap them in a pair, and push the pair to the stack
+
+    gc(vm);  // Collect garbage
+
+    free(vm);  // Clean up the VM when we're done with it
+
+    return 0;  // Return 0 to indicate that the program finished successfully
 }
