@@ -98,3 +98,44 @@ void mark (Object* object){
         mark(object->tail);
     }
 }
+
+typedef struct sObject{
+     struct sObject* next;
+
+} Object;
+
+typedef struct{
+    Object* firstObject;
+
+}VM;
+
+void sweep(VM* vm){
+    Object** object =&vm->firstObject;
+    while(*object){
+        if(!(*object)-> marked){
+            Object* unreached = *object;
+            *object = unreached->next;
+            free(unreached);
+        }else{
+            (*object)->marked = 0;
+            object = &(*object)->next;
+        }
+    }
+}
+
+void gc(VM* vm){
+    markAll(vm);
+    sweep(vm);
+}
+ typedef struct 
+ {
+    int numObjects;
+    int maxObjects;
+ }VM;
+
+ VM* newVM(){
+     vm->numObjects = 0;
+     vm->maxObjects = INITIAL_GC_THRESHOLD;
+     return vm;
+ }
+ 
