@@ -136,6 +136,7 @@ int main() {
     gc(vm);  // Collect garbage
 
     free(vm);  // Clean up the VM when we're done with it
+    
 
     return 0;  // Return 0 to indicate that the program finished successfully
 }
