@@ -1,0 +1,14 @@
+{
+    jemalloc = {
+        linkdirs = "/usr/lib",
+        __requirestr = "jemalloc",
+        links = "jemalloc",
+        version = "5.3.0_0",
+        envs = {
+            LD_LIBRARY_PATH = {
+                "/home/krone/.xmake/packages/j/jemalloc/5.3.0/e3e18908dc6c4d208a15d1c42420cbed/lib"
+            }
+        },
+        __enabled = true
+    }
+}

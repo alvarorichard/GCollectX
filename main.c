@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>
+#include <jemalloc/jemalloc.h>
+
 
 #define STACK_MAX 256
 #define INITIAL_GC_THRESHOLD 256
@@ -35,8 +37,21 @@ typedef struct {
 
 void gc(VM* vm);  // Forward declaration of gc function
 
+// VM* newVM() {
+//     VM* vm = malloc(sizeof(VM));
+//     vm->stackSize = 0;
+//     vm->numObjects = 0;
+//     vm->maxObjects = INITIAL_GC_THRESHOLD;
+//     return vm;
+// }
+
 VM* newVM() {
-    VM* vm = malloc(sizeof(VM));
+    VM* vm = malloc(sizeof(VM));  // This will use jemalloc's malloc
+    if (vm == NULL) {
+        // Handle the memory allocation error
+        fprintf(stderr, "Error allocating memory\n");
+        exit(EXIT_FAILURE);
+    }
     vm->stackSize = 0;
     vm->numObjects = 0;
     vm->maxObjects = INITIAL_GC_THRESHOLD;
@@ -53,10 +68,31 @@ Object* pop(VM* vm) {
     return vm->stack[--vm->stackSize];
 }
 
+// Object* newObject(VM* vm, ObjectType type) {
+//     if (vm->numObjects == vm->maxObjects) gc(vm);
+
+//     Object* object = malloc(sizeof(Object));
+//     object->type = type;
+//     object->marked = 0;
+
+//     object->next = vm->firstObject;
+//     vm->firstObject = object;
+
+//     vm->numObjects++;
+
+//     return object;
+// }
+
 Object* newObject(VM* vm, ObjectType type) {
     if (vm->numObjects == vm->maxObjects) gc(vm);
 
-    Object* object = malloc(sizeof(Object));
+    Object* object = malloc(sizeof(Object));  // This will use jemalloc's malloc
+    if (object == NULL) {
+        // Handle the memory allocation error
+        fprintf(stderr, "Error allocating memory\n");
+        exit(EXIT_FAILURE);
+    }
+
     object->type = type;
     object->marked = 0;
 
