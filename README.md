@@ -39,6 +39,11 @@ cd GColletX
 ```shell
 ./main
 ```
+Or use
+
+```lua
+xmake run
+```
 
 ## Contributing
 
