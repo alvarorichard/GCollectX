@@ -29,6 +29,32 @@ Navigate to the project directory:
 ```shell
 cd GColletX
 ```
+## Installation of jemalloc on Different Operating Systems
+jemalloc is a memory allocator that can improve the performance of C programs. Here's how you can install it on different Linux distributions:
+
+#### Debian:
+
+```shell
+sudo apt-get install libjemalloc-dev
+```
+
+#### Arch Linux: 
+```shell
+sudo pacman -S jemalloc
+```
+#### Fedora: 
+```shell
+sudo dnf install jemalloc
+``````
+
+
+
+
+
+
+
+
+
 
 ## Usage
  run xmake.lua
