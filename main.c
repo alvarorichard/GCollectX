@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <jemalloc/jemalloc.h>
 
-
 #define STACK_MAX 256
 #define INITIAL_GC_THRESHOLD 256
 
@@ -37,15 +36,8 @@ typedef struct {
 
 void gc(VM* vm);  // Forward declaration of gc function
 
-// VM* newVM() {
-//     VM* vm = malloc(sizeof(VM));
-//     vm->stackSize = 0;
-//     vm->numObjects = 0;
-//     vm->maxObjects = INITIAL_GC_THRESHOLD;
-//     return vm;
-// }
-
-VM* newVM() {
+VM* newVM() 
+{
     VM* vm = malloc(sizeof(VM));  // This will use jemalloc's malloc
     if (vm == NULL) {
         // Handle the memory allocation error
@@ -58,32 +50,20 @@ VM* newVM() {
     return vm;
 }
 
-void push(VM* vm, Object* value) {
+void push(VM* vm, Object* value) 
+{
     assert(vm->stackSize < STACK_MAX);
     vm->stack[vm->stackSize++] = value;
 }
 
-Object* pop(VM* vm) {
+Object* pop(VM* vm) 
+{
     assert(vm->stackSize > 0);
     return vm->stack[--vm->stackSize];
 }
 
-// Object* newObject(VM* vm, ObjectType type) {
-//     if (vm->numObjects == vm->maxObjects) gc(vm);
-
-//     Object* object = malloc(sizeof(Object));
-//     object->type = type;
-//     object->marked = 0;
-
-//     object->next = vm->firstObject;
-//     vm->firstObject = object;
-
-//     vm->numObjects++;
-
-//     return object;
-// }
-
-Object* newObject(VM* vm, ObjectType type) {
+Object* newObject(VM* vm, ObjectType type) 
+{
     if (vm->numObjects == vm->maxObjects) gc(vm);
 
     Object* object = malloc(sizeof(Object));  // This will use jemalloc's malloc
@@ -104,13 +84,15 @@ Object* newObject(VM* vm, ObjectType type) {
     return object;
 }
 
-void pushInt(VM* vm, int intValue) {
+void pushInt(VM* vm, int intValue) 
+{
     Object* object = newObject(vm, OBJ_INT);
     object->value = intValue;
     push(vm, object);
 }
 
-Object* pushPair(VM* vm) {
+Object* pushPair(VM* vm) 
+{
     Object* object = newObject(vm, OBJ_PAIR);
     object->tail = pop(vm);
     object->head = pop(vm);
@@ -119,7 +101,8 @@ Object* pushPair(VM* vm) {
     return object;
 }
 
-void mark(Object* object) {
+void mark(Object* object) 
+{
     if (object->marked) return;
 
     object->marked = 1;
@@ -130,13 +113,15 @@ void mark(Object* object) {
     }
 }
 
-void markAll(VM* vm) {
+void markAll(VM* vm) 
+{
     for (int i = 0; i < vm->stackSize; i++) {
         mark(vm->stack[i]);
     }
 }
 
-void sweep(VM* vm) {
+void sweep(VM* vm) 
+{
     Object** object = &vm->firstObject;
     while (*object) {
         if (!(*object)->marked) {
@@ -151,7 +136,8 @@ void sweep(VM* vm) {
     }
 }
 
-void gc(VM* vm) {
+void gc(VM* vm) 
+{
     int numObjects = vm->numObjects;
 
     markAll(vm);
@@ -162,17 +148,17 @@ void gc(VM* vm) {
     printf("Collected %d objects, %d remaining.\n", numObjects - vm->numObjects, vm->numObjects);
 }
 
-int main() {
+int main() 
+{
     VM* vm = newVM();  // Create a new VM
 
     pushInt(vm, 1);  // Push an integer to the stack
     pushInt(vm, 2);  // Push another integer to the stack
-    pushPair(vm);  // Pop two integers from the stack, wrap them in a pair, and push the pair to the stack
+    pushPair(vm);    // Pop two integers from the stack, wrap them in a pair, and push the pair to the stack
 
     gc(vm);  // Collect garbage
 
     free(vm);  // Clean up the VM when we're done with it
-    
 
     return 0; 
 }
